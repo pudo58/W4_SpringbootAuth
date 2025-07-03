@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
-public class CategoryService {
+public class CategoryService { // tạo cho a các interface service nữa nhé
     CategoryRepo categoryRepo;
     Mapping mapping;
     public ApiResponse addCategory(CategoryRequest request) {

@@ -39,27 +39,31 @@ public class AuthService {
 
     public ApiResponse<AuthResponse> login(LoginRequest request) {
         boolean checkUsername = userRepository.existsByUsername(request.getUsername());
-        if (!checkUsername) throw new UsernameNotFoundException("Username not found");
+        if (!checkUsername)
+            throw new UsernameNotFoundException("Incorrect account or password"); // không nên thông báo username không tồn tại để tránh bị tấn công bruce force
         User user = userRepository.findByUsername(request.getUsername());
         boolean matchPass = passwordEncoder.matches(request.getPassword(), user.getPassword());
-        String accessToken = "";
-        String refreshToken = "";
         if (matchPass) {
-            accessToken = jwtService.generateToken(user, true, expAccess, accessKey);
-            refreshToken = jwtService.generateToken(user, false, expRefresh, refreshKey);
+            String accessToken = jwtService.generateToken(user, true, expAccess, accessKey);
+            String refreshToken = jwtService.generateToken(user, false, expRefresh, refreshKey);
             tokenService.saveTokenToRedis(user.getUsername(), refreshToken);
             tokenService.saveTokenToRedis(user.getUsername(), accessToken);
             log.info("User's Token in Redis", tokenService.getTokenFromRedis(user.getUsername()));
+            AuthResponse authResponse = AuthResponse.builder()
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .build();
+            return ApiResponse.<AuthResponse>builder()
+                    .code(200)
+                    .message("Success")
+                    .result(authResponse)
+                    .build();
+        } else {
+            return ApiResponse.<AuthResponse>builder()
+                    .code(500)
+                    .message("Incorrect account or password")
+                    .build();
         }
-        AuthResponse authResponse = AuthResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
-
-        return ApiResponse.<AuthResponse>builder()
-                .code(200)
-                .message("Success")
-                .result(authResponse)
-                .build();
+        // xử lý thêm case sai password
     }
 }

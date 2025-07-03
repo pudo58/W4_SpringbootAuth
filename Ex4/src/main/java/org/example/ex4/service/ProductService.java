@@ -36,7 +36,7 @@ public class ProductService {
         Product product = mapping.toProduct(request);
         Category category = categoryRepository.findById(request.getCategoryId()).orElse(null);
 
-        product.setCategory(category);
+        product.setCategory(category); // chỗ này em ko cho update danh mục à
         productRepository.save(product);
         ProductDTO productResponse = mapping.toProductDto(product);
         productResponse.setCategoryId(category.getId());
@@ -63,7 +63,7 @@ public class ProductService {
         List<ProductDTO> productResponse = result.stream()
                 .map(mapping::toProductDto)
                 .collect(Collectors.toList());
-
+        // sao chỗ này e ko dùng luôn Page của Spring Boo, mà phải dùng MetaData
         return ApiResponse.<ProductResponse>builder()
                 .code(200)
                 .message("Product list found")

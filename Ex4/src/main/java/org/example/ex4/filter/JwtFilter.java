@@ -75,4 +75,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
     }
 
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        return super.shouldNotFilter(request); // em tìm hiểu thêm shouldNotFilter(HttpServletRequest request) nữa nhé
+    }
 }

@@ -1,19 +1,16 @@
 package org.example.ex4.dto;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 @Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Setter
+@Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDTO {
-
     String id;
     String username;
     String email;
